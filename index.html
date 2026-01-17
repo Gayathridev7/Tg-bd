@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Happy Birthday! 🎉</title>
+<style>
+/* BODY AND TITLE */
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background: linear-gradient(135deg, #ffe4e1, #fff0f5);
+  text-align: center;
+  overflow-x: hidden;
+  padding: 5vw 2vw;
+}
+h1 {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  color: #ff4d6d;
+  text-shadow: 2px 2px #fff;
+  animation: bounce 1s infinite alternate;
+  margin-bottom: 2vh;
+}
+@keyframes bounce{
+  0%{ transform: translateY(0);}
+  100%{ transform: translateY(-20px);}
+}
+
+/* COUNTDOWN */
+#countdown {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  font-family: 'Courier New', monospace;
+  color: #ff69b4;
+  text-shadow: 1px 1px #fff;
+  margin: 2vh 0 4vh 0;
+}
+
+/* BUTTON */
+button {
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  padding: 1em 2em;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #ffb6c1, #ff69b4);
+  color: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  }
+
+ /* SURPRISE MESSAGE */
+#surpriseMessage {
+  display: none;
+  font-size: clamp(1rem, 3vw, 1.7rem);
+  margin-top: 3vh;
+  background: #fff0f5;
+  padding: 2em;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  animation: fadeIn 1s ease-in-out forwards;
+  position: relative;
+  line-height: 1.8;
+}
+
+/* HEARTS */
+.heart {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: red;
+  transform: rotate(-45deg);
+  animation: floatUp linear infinite;
+}
+.heart::before,
+.heart::after {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: red;
+  border-radius: 50%;
+}
+.heart::before { top:-7.5px; left:0;}
+.heart::after { top:0; left:7.5px;}
+@keyframes floatUp{
+  0%{ transform: translateY(100vh);}
+  100%{ transform: translateY(-50px);}
+}
+
+/* CONFETTI CANVAS */
+#confetti {
+  position: fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+
+/* BALLOONS */
+.balloon {
+  position: absolute;
+  width: clamp(40px, 10vw, 60px);
+  height: clamp(60px, 15vw, 80px);
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: floatBalloon linear infinite;
+}
+.balloon::after {
+  content:''; position:absolute;
+  width:2px; height:30px;
+  background:#333;
+  bottom:-30px;
+  left:50%;
+}
+@keyframes floatBalloon{
+  0%{ transform: translateY(100vh);}
+  100%{ transform: translateY(-150px);}
+}
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 600px){
+  body { padding: 5vw 3vw; }
+  #surpriseMessage { padding: 1.5em; font-size: 1rem;}
+  button { padding: 0.8em 1.5em; font-size: 1rem;}
+}
+</style>
+</head>
+<body>
+
+<h1>Advance Happy Birthday, my love❤️</h1>
+<div id="countdown">00:00:00:00</div>
+
+<button id="surpriseBtn">🎁 Open Surprise!</button>
+
+<div id="surpriseMessage">
+  🎉 <strong>Advanced Happy Birthday My partner❤️</strong> 🎉<br><br>
+ On that 31st of January, a day as special as you, I celebrate not just your birth, but the incredible person you are. Each year, you grow wiser, stronger, and even more amazing, and I feel so lucky to witness every step of your journey.May this year bring you dreams realized, endless laughter, and love that deepens with every moment. Thank you for being my rock, my joy, and my heart’s safe haven. Here’s to the adventures ahead, the memories we’ll create, and a life that’s as extraordinary as you are.
+</div>
+
+<canvas id="confetti"></canvas>
+<audio id="birthdayMusic" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-buddy.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  // ===================== COUNTDOWN =====================
+  const countdownEl = document.getElementById("countdown");
+  const birthdayDate = new Date("2026-01-31 00:00:00").getTime();
+
+  function updateCountdown(){
+    const now = new Date().getTime();
+    let gap = birthdayDate - now;
+    if(gap < 0) gap = 0;
+
+    const second=1000, minute=second*60, hour=minute*60, day=hour*24;
+    const d = String(Math.floor(gap/day)).padStart(2,'0');
+    const h = String(Math.floor((gap%day)/hour)).padStart(2,'0');
+    const m = String(Math.floor((gap%hour)/minute)).padStart(2,'0');
+    const s = String(Math.floor((gap%minute)/second)).padStart(2,'0');
+    countdownEl.innerText = `${d}:${h}:${m}:${s}`;
+  }
+  setInterval(updateCountdown,1000);
+
+  // ===================== SURPRISE BUTTON =====================
+  const btn = document.getElementById("surpriseBtn");
+  const msg = document.getElementById("surpriseMessage");
+  const music = document.getElementById("birthdayMusic");
+  const canvas = document.getElementById("confetti");
+  const ctx = canvas.getContext("2d");
+
+  function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+
+  btn.addEventListener("click", ()=>{
+    msg.style.display="block";
+    music.play().catch(()=>alert("Click to allow music"));
+    startConfetti();
+    createHearts(30);
+    createBalloons(10);
+  });
+
+  // ===================== CONFETTI =====================
+  let confettiArr=[];
+  class Confetti{
+    constructor(){
+      this.x=Math.random()*canvas.width;
+      this.y=Math.random()*canvas.height - canvas.height;
+      this.size=Math.random()*Math.min(10, window.innerWidth*0.01)+5;
+      this.speed=Math.random()*3+2;
+      this.color=`hsl(${Math.random()*360},100%,50%)`;
+    }
+    update(){
+      this.y += this.speed;
+      if(this.y > canvas.height){ this.y = -this.size; this.x = Math.random()*canvas.width;}
+    }
+    draw(){
+      ctx.fillStyle = this.color;
+      ctx.fillRect(this.x,this.y,this.size,this.size);
+    }
+  }
+  function startConfetti(){
+    confettiArr=[];
+    for(let i=0;i<200;i++) confettiArr.push(new Confetti());
+    animateConfetti();
+  }
+  function animateConfetti(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confettiArr.forEach(c=>{c.update();c.draw();});
+    requestAnimationFrame(animateConfetti);
+  }
+
+  // ===================== FLOATING HEARTS =====================
+  function createHearts(num){
+    for(let i=0;i<num;i++){
+      const heart=document.createElement("div");
+      heart.className="heart";
+      heart.style.left = Math.random()*window.innerWidth + "px";
+      heart.style.animationDuration = 3 + Math.random()*3 + "s";
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(),5000);
+    }
+  }
+
+  // ===================== FLOATING BALLOONS =====================
+  const colors = ["#ff4d4d","#ffb84d","#4d79ff","#33cc33","#ff66b2"];
+  function createBalloons(num){
+    for(let i=0;i<num;i++){
+      const balloon = document.createElement("div");
+      balloon.className="balloon";
+      balloon.style.backgroundColor = colors[Math.floor(Math.random()*colors.length)];
+      balloon.style.left = Math.random()*window.innerWidth + "px";
+      balloon.style.animationDuration = 5 + Math.random()*5 + "s";
+      document.body.appendChild(balloon);
+      setTimeout(()=>balloon.remove(),8000);
+    }
+  }
+</script>
+
+</body>
+</html>
